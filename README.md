@@ -6,4 +6,4 @@ Once the data has been submited, the user can find it by ID, to remove it or edi
 
 You can have a look at the final result here
 
-<a href='https://budy6991.github.io/shopping-cart'>here </a>
+<a href='https://budy6991.github.io/simple-input-database/'>here </a>
