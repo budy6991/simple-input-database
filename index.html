@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Input Database</title>
+    <style>
+      * {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+          sans-serif;
+        font-weight: bolder;
+      }
+      body {
+        text-align: center;
+        display: flex;
+        justify-content: space-evenly;
+      }
+      #enterDetails {
+        width: 100%;
+        background-color: blue;
+        border-radius: 25px;
+        color: floralwhite;
+        margin: 1em;
+      }
+      #mainContainer {
+        width: 100%;
+      }
+      #findDetails {
+        margin: 1em;
+
+        width: 100%;
+        background-color: whitesmoke;
+        color: blue;
+        border-radius: 25px;
+      }
+      #resultContainer {
+        align-self: center;
+        width: 100%;
+        background-color: rgb(255, 255, 255);
+        border-radius: 25px;
+        color: blue;
+        margin: 1em;
+      }
+
+      input {
+        width: 120px;
+        border-radius: 25px;
+        padding: 10px;
+        text-align: center;
+      }
+      button {
+        border-radius: 25px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mainContainer">
+      <div id="enterDetails">
+        <h1>Enter Details</h1>
+        <h4>ID</h4>
+        <input id="enterID" type="text" />
+        <h4>Name</h4>
+        <input id="enterName" type="text" />
+        <h4>Age</h4>
+        <input id="enterAge" type="number" /> <br />
+        <br />
+        <button id="insert">INSERT</button>
+        <button id="update">UPDATE</button>
+        <button id="remove">REMOVE</button>
+        <br />
+        <br />
+      </div>
+      <div id="findDetails">
+        <h1>Find by ID</h1>
+        <h4>ID</h4>
+        <input id="findId" type="text" /><br /><br />
+        <button id="find">FIND</button>
+      </div>
+    </div>
+    <div id="resultContainer">
+      <h3 id="findName" type="text"></h3>
+      <h3 id="findAge" type="text"></h3>
+    </div>
+
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDO9jXwny9OCfkNv6I_TYjU8MQRFA1MStk",
+        authDomain: "simple-input-database.firebaseapp.com",
+        databaseURL:
+          "https://simple-input-database-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "simple-input-database",
+        storageBucket: "simple-input-database.appspot.com",
+        messagingSenderId: "813296102253",
+        appId: "1:813296102253:web:b00697a5cefeb7ceb88864",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      import {
+        getDatabase,
+        set,
+        get,
+        update,
+        remove,
+        ref,
+        child,
+      } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-database.js";
+
+      const db = getDatabase();
+
+      const enterId = document.querySelector("#enterID");
+      const enterName = document.querySelector("#enterName");
+      const enterAge = document.querySelector("#enterAge");
+      const findId = document.querySelector("#findId");
+      const findName = document.querySelector("#findName");
+      const findAge = document.querySelector("#findAge");
+
+      const insertBtn = document.querySelector("#insert");
+      const updateBtn = document.querySelector("#update");
+      const removeBtn = document.querySelector("#remove");
+      const findBtn = document.querySelector("#find");
+
+      const insertData = () => {
+        set(ref(db, "People/" + enterId.value), {
+          Name: enterName.value,
+          ID: enterId.value,
+          Age: enterAge.value,
+        })
+          .then(() => {
+            alert("Data added succesfully!");
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      };
+      const findData = () => {
+        const dbref = ref(db);
+
+        get(child(dbref, "People/" + findId.value))
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              findName.innerHTML = "Name:" + snapshot.val().Name;
+              findAge.innerHTML = "Age:" + snapshot.val().Age;
+            } else {
+              alert("No data found");
+            }
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      };
+      const updateData = () => {
+        update(ref(db, "People/" + enterId.value), {
+          Name: enterName.value,
+          Age: enterAge.value,
+        })
+          .then(() => {
+            alert("Data updated succesfully!");
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      };
+
+      const removeData = () => {
+        remove(ref(db, "People/" + enterId.value))
+          .then(() => {
+            alert("Data removed successfully");
+          })
+          .cath((error) => {
+            alert(error);
+          });
+      };
+
+      insertBtn.addEventListener("click", insertData);
+      updateBtn.addEventListener("click", updateData);
+      removeBtn.addEventListener("click", removeData);
+      findBtn.addEventListener("click", findData);
+    </script>
+  </body>
+</html>
